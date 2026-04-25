@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sheru — Your machine's offline helping hand</title>
-  <meta name="description" content="Sheru is a local desktop agent that monitors your machine and lets you talk to it in plain language. No cloud. No API keys. No telemetry." />
-  <meta property="og:title" content="Sheru — Your machine's offline helping hand" />
-  <meta property="og:description" content="Chat with your PC. Local, private, offline." />
+  <title>Sheru — The AI colleague that knows your job</title>
+  <meta name="description" content="Sheru reads your mail, calendar, and files locally — then reasons with AI on anonymised data. Your personal details never leave your machine." />
+  <meta property="og:title" content="Sheru — The AI colleague that knows your job" />
+  <meta property="og:description" content="Local reads. Anonymised AI. Role-aware. Built for office workers." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0d1117" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #21262d;
-      --accent: #22c55e;
-      --accent-dim: #16a34a;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --radius: 10px;
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --surface2: #1c2128;
+      --border:   #21262d;
+      --border2:  #30363d;
+      --accent:   #22c55e;
+      --accent-lo: rgba(34,197,94,.12);
+      --accent-mid: rgba(34,197,94,.25);
+      --text:     #e6edf3;
+      --muted:    #8b949e;
+      --dim:      #6e7681;
+      --radius:   10px;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -33,304 +36,270 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: .15rem .4rem;
+      border-radius: 4px;
+      font-size: .85em;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
 
     /* ── Nav ── */
     nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(13, 17, 23, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
       padding: 0 1.5rem;
     }
     .nav-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
       height: 60px;
     }
-    .nav-logo {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .nav-logo .dog { font-size: 1.4rem; }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      list-style: none;
-    }
-    .nav-links a { color: var(--muted); font-size: 0.9rem; transition: color 0.15s; }
+    .nav-logo { font-weight: 700; font-size: 1.05rem; color: var(--text); display: flex; align-items: center; gap: .5rem; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: .875rem; transition: color .15s; }
     .nav-links a:hover { color: var(--text); text-decoration: none; }
-    .nav-links .btn-nav {
-      background: var(--accent);
-      color: #000;
-      padding: 0.35rem 0.85rem;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: background 0.15s;
+    .nav-cta {
+      background: var(--accent); color: #000 !important;
+      padding: .35rem .9rem; border-radius: 6px;
+      font-weight: 600; font-size: .825rem; transition: background .15s;
     }
-    .nav-links .btn-nav:hover { background: #4ade80; text-decoration: none; }
+    .nav-cta:hover { background: #4ade80 !important; text-decoration: none !important; }
+
+    /* ── Layout helpers ── */
+    .container { max-width: 1100px; margin: 0 auto; }
+    section { padding: 5.5rem 1.5rem; }
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: .6rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800; letter-spacing: -.03em; line-height: 1.2;
+      margin-bottom: .85rem;
+    }
+    .section-sub { color: var(--muted); max-width: 560px; margin-bottom: 3rem; }
+    .centered { text-align: center; }
+    .centered .section-sub { margin-left: auto; margin-right: auto; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.4rem; border-radius: 8px;
+      font-weight: 600; font-size: .925rem;
+      transition: all .15s; text-decoration: none; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #4ade80; text-decoration: none; transform: translateY(-1px); }
+    .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--border2); text-decoration: none; }
 
     /* ── Hero ── */
     .hero {
       padding: 6rem 1.5rem 5rem;
       text-align: center;
-      max-width: 760px;
-      margin: 0 auto;
+      max-width: 800px; margin: 0 auto;
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.25);
-      color: var(--accent);
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.3rem 0.75rem;
-      border-radius: 100px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+      display: inline-flex; align-items: center; gap: .45rem;
+      background: var(--accent-lo); border: 1px solid var(--accent-mid);
+      color: var(--accent); font-size: .75rem; font-weight: 700;
+      padding: .3rem .8rem; border-radius: 100px;
+      letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2rem;
     }
     .hero-badge .dot {
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
+      width: 6px; height: 6px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.25rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.25rem;
-      color: var(--text);
-    }
-    .hero h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 2.5rem;
-    }
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-decoration: none;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #000;
-    }
-    .btn-primary:hover { background: #4ade80; text-decoration: none; transform: translateY(-1px); }
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { border-color: var(--muted); text-decoration: none; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-    /* ── Section ── */
-    section { padding: 5rem 1.5rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
-    .section-label {
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.75rem;
+    .hero h1 {
+      font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -.035em;
+      margin-bottom: 1.25rem;
     }
-    .section-title {
-      text-align: center;
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted);
+      max-width: 580px; margin: 0 auto 2.5rem; line-height: 1.7;
+    }
+    .hero-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── How it works ── */
+    .how-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    @media (max-width: 680px) { .steps { grid-template-columns: 1fr; } }
+    .step {
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .step + .step { border-left: 1px solid var(--border); }
+    @media (max-width: 680px) { .step + .step { border-left: none; border-top: 1px solid var(--border); } }
+    .step-num {
+      font-size: .7rem; font-weight: 800; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent);
       margin-bottom: 1rem;
     }
-    .section-sub {
-      text-align: center;
-      color: var(--muted);
-      max-width: 540px;
-      margin: 0 auto 3.5rem;
-    }
+    .step-icon { font-size: 1.75rem; margin-bottom: .85rem; }
+    .step h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; }
+    .step p { color: var(--muted); font-size: .9rem; line-height: 1.65; }
 
     /* ── Feature grid ── */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-    }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .feature-card:hover {
-      border-color: rgba(34, 197, 94, 0.3);
-      transform: translateY(-2px);
-    }
-    .feature-icon {
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
-    }
-    .feature-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .feature-card p { color: var(--muted); font-size: 0.9rem; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .feature-card { background: var(--bg); padding: 2rem; }
+    .feature-card:hover { background: var(--surface); }
+    .feature-icon { font-size: 1.6rem; margin-bottom: .85rem; }
+    .feature-card h3 { font-size: .975rem; font-weight: 700; margin-bottom: .4rem; }
+    .feature-card p { color: var(--muted); font-size: .875rem; line-height: 1.65; }
 
-    /* ── Privacy section ── */
-    .privacy-section {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
+    /* ── Roles ── */
+    .roles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
+    .role-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .role-card:hover { border-color: rgba(34,197,94,.35); transform: translateY(-2px); }
+    .role-emoji { font-size: 1.5rem; margin-bottom: .6rem; }
+    .role-card h3 { font-size: .9rem; font-weight: 700; margin-bottom: .4rem; }
+    .role-card ul { list-style: none; display: flex; flex-direction: column; gap: .2rem; }
+    .role-card ul li { color: var(--muted); font-size: .8rem; display: flex; gap: .4rem; }
+    .role-card ul li::before { content: "·"; color: var(--accent); flex-shrink: 0; }
+
+    /* ── PII section ── */
+    .pii-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .pii-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    @media (max-width: 780px) { .pii-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .pii-copy .section-title span { color: var(--accent); }
+    .pii-list { list-style: none; display: flex; flex-direction: column; gap: .9rem; }
+    .pii-list li { display: flex; gap: .75rem; font-size: .925rem; color: var(--muted); align-items: flex-start; }
+    .pii-list li .check { color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: .05rem; }
+    .pii-list li strong { color: var(--text); }
+
+    .dialog-mock {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .8rem;
+    }
+    .dialog-header {
+      background: var(--surface2);
       border-bottom: 1px solid var(--border);
+      padding: .65rem 1rem;
+      display: flex; align-items: center; gap: .5rem;
     }
-    .privacy-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
+    .dialog-dots { display: flex; gap: .35rem; }
+    .dialog-dots span { width: 11px; height: 11px; border-radius: 50%; }
+    .dialog-dots .r { background: #ef4444; }
+    .dialog-dots .y { background: #f59e0b; }
+    .dialog-dots .g { background: #22c55e; }
+    .dialog-title { font-size: .75rem; color: var(--muted); margin-left: auto; margin-right: auto; font-family: inherit; }
+    .dialog-body { padding: 1.25rem 1.5rem; }
+    .dialog-body p { color: var(--muted); margin-bottom: 1rem; font-size: .8rem; }
+    .redact-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; font-size: .78rem; }
+    .redact-tag { background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.3); color: #f87171; padding: .15rem .45rem; border-radius: 4px; font-size: .72rem; font-family: inherit; }
+    .redact-arrow { color: var(--dim); }
+    .redact-value { color: var(--text); }
+    .dialog-gemini {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: .75rem; margin: 1rem 0; font-size: .78rem; color: var(--muted);
     }
-    @media (max-width: 720px) {
-      .privacy-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .dialog-gemini span { color: var(--dim); display: block; margin-bottom: .4rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+    .dialog-cost { display: flex; justify-content: space-between; margin: 1rem 0 1.25rem; font-size: .78rem; color: var(--muted); }
+    .dialog-cost strong { color: var(--text); }
+    .dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .dialog-btn {
+      padding: .5rem; border-radius: 6px; text-align: center;
+      font-size: .78rem; font-weight: 700; font-family: inherit;
     }
-    .privacy-statement {
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.25;
-    }
-    .privacy-statement span { color: var(--accent); }
-    .privacy-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
-    .privacy-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-    .privacy-list li::before {
-      content: "✓";
-      color: var(--accent);
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 0.05rem;
-    }
-    .privacy-list li strong { color: var(--text); }
+    .dialog-btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); }
+    .dialog-btn-send { background: var(--accent); color: #000; }
 
-    /* ── Platform table ── */
-    .platform-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
+    /* ── Token section ── */
+    .token-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    @media (max-width: 720px) { .token-grid { grid-template-columns: 1fr; gap: 2rem; } }
+
+    .token-free {
+      background: var(--accent-lo); border: 1px solid var(--accent-mid);
+      border-radius: var(--radius); padding: 1.75rem;
+      margin-bottom: 1.5rem;
     }
+    .token-free h3 { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: .25rem; }
+    .token-free p { color: var(--muted); font-size: .9rem; }
+
+    .pack-list { display: flex; flex-direction: column; gap: .75rem; }
+    .pack {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.25rem;
+    }
+    .pack-name { font-weight: 700; font-size: .9rem; }
+    .pack-tokens { color: var(--muted); font-size: .8rem; margin-top: .15rem; }
+    .pack-price { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
+    .pack-payment { display: flex; gap: .4rem; margin-top: 1rem; flex-wrap: wrap; }
+    .pay-badge {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: .25rem .6rem;
+      font-size: .75rem; color: var(--muted);
+    }
+
+    .free-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .free-list li { display: flex; gap: .6rem; font-size: .875rem; color: var(--muted); align-items: flex-start; }
+    .free-list li::before { content: "✓"; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+    /* ── Download ── */
+    .platform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
     .platform-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      display: flex; flex-direction: column; gap: 1rem;
     }
-    .platform-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .platform-icon { font-size: 1.5rem; }
+    .platform-header { display: flex; align-items: center; gap: .75rem; }
+    .platform-icon { font-size: 1.75rem; }
     .platform-name { font-weight: 700; }
-    .platform-arch { font-size: 0.8rem; color: var(--muted); }
+    .platform-arch { font-size: .8rem; color: var(--muted); }
     .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 100px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      display: inline-block; padding: .2rem .65rem;
+      border-radius: 100px; font-size: .72rem; font-weight: 700;
       align-self: flex-start;
     }
-    .badge-beta { background: rgba(34, 197, 94, 0.15); color: var(--accent); }
-    .badge-planned { background: rgba(139, 148, 158, 0.15); color: var(--muted); }
-    .platform-action { margin-top: auto; }
-    .platform-action .btn { width: 100%; justify-content: center; font-size: 0.875rem; padding: 0.6rem 1rem; }
+    .badge-beta { background: rgba(34,197,94,.12); color: var(--accent); border: 1px solid var(--accent-mid); }
+    .badge-soon { background: rgba(139,148,158,.1); color: var(--muted); border: 1px solid var(--border); }
+    .platform-btn { margin-top: auto; }
+    .platform-btn .btn { width: 100%; justify-content: center; font-size: .875rem; padding: .65rem 1rem; }
 
-    /* ── CTA section ── */
-    .cta-section {
-      text-align: center;
-    }
+    /* ── CTA ── */
     .cta-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 4rem 2rem;
-      max-width: 640px;
-      margin: 0 auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 4rem 2rem;
+      max-width: 620px; margin: 0 auto; text-align: center;
     }
-    .cta-box h2 {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
+    .cta-box h2 { font-size: clamp(1.4rem,3vw,2rem); font-weight: 800; letter-spacing: -.025em; margin-bottom: .85rem; }
     .cta-box p { color: var(--muted); margin-bottom: 2rem; }
 
     /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2.5rem 1.5rem;
-    }
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 1.5rem; }
     .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
     }
-    .footer-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    .footer-brand { font-weight: 600; font-size: .9rem; color: var(--text); }
     .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
-    .footer-links a { color: var(--muted); font-size: 0.85rem; transition: color 0.15s; }
+    .footer-links a { color: var(--muted); font-size: .825rem; transition: color .15s; }
     .footer-links a:hover { color: var(--text); text-decoration: none; }
-    .footer-copy { color: var(--muted); font-size: 0.8rem; width: 100%; text-align: center; margin-top: 0.5rem; }
+    .footer-copy { color: var(--dim); font-size: .775rem; width: 100%; text-align: center; margin-top: .5rem; }
+
+    /* ── divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -338,36 +307,60 @@
 <!-- Nav -->
 <nav>
   <div class="nav-inner">
-    <div class="nav-logo">
-      <span class="dog">🐕</span> Sheru
-    </div>
+    <div class="nav-logo">🐕 Sheru</div>
     <ul class="nav-links">
-      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#roles">Roles</a></li>
       <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#pricing">Pricing</a></li>
       <li><a href="#download">Download</a></li>
       <li><a href="https://github.com/AivionLabs/sheru" target="_blank" rel="noopener">GitHub</a></li>
-      <li><a href="https://github.com/AivionLabs/sheru-releases/releases" class="btn-nav" target="_blank" rel="noopener">Beta Access</a></li>
+      <li><a href="mailto:hello@aivionlabs.com?subject=Sheru Beta Access Request" class="nav-cta">Get access</a></li>
     </ul>
   </div>
 </nav>
 
 <!-- Hero -->
-<section class="hero">
+<div class="hero">
   <div class="hero-badge">
     <span class="dot"></span>
     Closed Beta · v0.1.0
   </div>
-  <h1>Your machine's<br /><span>offline helping hand</span></h1>
-  <p>
-    Chat with your PC in plain language. Sheru monitors your hardware, processes, mail, and calendar — all locally, all private. No cloud. No API keys. No telemetry.
+  <h1>The AI colleague<br />that <em>knows your job</em></h1>
+  <p class="hero-sub">
+    Sheru reads your mail, calendar, and files locally — then reasons with AI on anonymised data. Your personal details never leave your machine. Built for real office workers.
   </p>
   <div class="hero-actions">
-    <a href="#download" class="btn btn-primary">
-      ↓ Download
-    </a>
-    <a href="https://github.com/AivionLabs/sheru" class="btn btn-secondary" target="_blank" rel="noopener">
-      View source
-    </a>
+    <a href="#download" class="btn btn-primary">↓ Download</a>
+    <a href="#how" class="btn btn-ghost">How it works</a>
+  </div>
+</div>
+
+<!-- How it works -->
+<section id="how" class="how-section">
+  <div class="container">
+    <p class="section-label centered">How it works</p>
+    <h2 class="section-title centered" style="margin-bottom:2.5rem;">Local reads. Anonymised AI.</h2>
+    <div class="steps">
+      <div class="step">
+        <p class="step-num">Step 1</p>
+        <div class="step-icon">🖥️</div>
+        <h3>Reads locally</h3>
+        <p>Sheru reads your mail, calendar, files, and system metrics directly on your device. Nothing is sent anywhere at this stage. Everything runs on your machine.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">Step 2</p>
+        <div class="step-icon">🛡️</div>
+        <h3>Strips your data</h3>
+        <p>Before any AI call, Sheru replaces names, email addresses, phone numbers, and amounts with placeholders. You see exactly what was removed — and approve before it goes.</p>
+      </div>
+      <div class="step">
+        <p class="step-num">Step 3</p>
+        <div class="step-icon">✨</div>
+        <h3>AI reasons</h3>
+        <p>Only the anonymised text reaches Gemini via the AivionLabs proxy (zero-log, no-retention). The result comes back and Sheru restores your real names locally.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -375,113 +368,293 @@
 <section id="features">
   <div class="container">
     <p class="section-label">Capabilities</p>
-    <h2 class="section-title">Everything runs on your machine</h2>
-    <p class="section-sub">Ask questions in plain English. Sheru reads real data from your system and gives structured answers — no internet required.</p>
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-sub">From finding a file to drafting a reply to checking your calendar — all from a single chat window, all on your machine.</p>
     <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📬</div>
+        <h3>Mail — read, rank, draft</h3>
+        <p>Reads Outlook, Apple Mail, Gmail, and any IMAP account locally. Ranks by importance for your role. Drafts replies with AI after stripping identifiers.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Calendar awareness</h3>
+        <p>Knows your schedule from Outlook, macOS Calendar, or Google Calendar. Gets a 5-minute meeting prep brief before every call — attendee emails, related files, last notes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>File search &amp; open</h3>
+        <p>"Find my offer letter" returns the path in under a second. Drag any document onto Sheru and get an instant AI summary — PDF, Word, spreadsheet.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌅</div>
+        <h3>Morning briefing</h3>
+        <p>First thing every morning: today's interviews, pending approvals, urgent emails, and calendar — all in one card. Role-tailored. No AI tokens required for the daily summary.</p>
+      </div>
       <div class="feature-card">
         <div class="feature-icon">🖥️</div>
         <h3>System monitoring</h3>
-        <p>CPU, memory, disk, network, temperature sensors, and running processes — all at a glance or on demand.</p>
+        <p>CPU, RAM, disk, network, sensors, and processes — always available. "Why is my PC slow?" gets a real answer with the actual process name, not a generic shrug.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Memory</h3>
+        <p>Say "Sheru, remember my manager is Sarah" and it sticks. Inspect and delete everything from the "What I remember" panel. No database jargon — plain English cards.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📡</div>
         <h3>Network awareness</h3>
-        <p>Discover your router, connected devices, and active connections via local ARP scanning — nothing leaves your LAN.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📬</div>
-        <h3>Local mail</h3>
-        <p>Read and summarise emails from Outlook, Apple Mail, Gmail, or any IMAP account — processed entirely on-device.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📅</div>
-        <h3>Calendar</h3>
-        <p>Query and reason about events from Outlook, macOS Calendar, or Google Calendar without leaving your machine.</p>
+        <p>Discovers your router, LAN devices, and active connections via local ARP scanning. Everything stays on your network — nothing is forwarded.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔌</div>
         <h3>MCP support</h3>
-        <p>Connect to external MCP servers for additional tools, or expose Sheru itself as an MCP server for other agents.</p>
+        <p>Connect to external MCP servers (Slack, Notion, Jira). Or let Sheru expose itself as an MCP server — Claude Desktop and Cursor can reach your files and calendar through it.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🎙️</div>
         <h3>Voice input</h3>
-        <p>Optional faster-whisper integration for hands-free operation on Apple Silicon and CUDA-capable machines.</p>
+        <p>Optional faster-whisper integration for hands-free use. Runs locally on Apple Silicon or CUDA — no cloud transcription.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Privacy -->
-<section id="privacy" class="privacy-section">
-  <div class="privacy-inner container">
-    <div>
-      <p class="section-label" style="text-align:left;">Privacy first</p>
-      <h2 class="privacy-statement">
-        Your data<br /><span>never leaves</span><br />your machine.
-      </h2>
+<!-- Roles -->
+<section id="roles" style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <p class="section-label">Built for your role</p>
+    <h2 class="section-title">One answer at onboarding.<br />A different Sheru for everyone.</h2>
+    <p class="section-sub">Sheru asks your job role once and unlocks a tailored set of defaults, briefing templates, and suggested actions. No configuration required.</p>
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-emoji">👥</div>
+        <h3>HR &amp; People Ops</h3>
+        <ul>
+          <li>Interview brief before every meeting</li>
+          <li>Pending leave requests surfaced</li>
+          <li>Resignation email detector</li>
+          <li>Offer letter draft from template</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">📞</div>
+        <h3>Sales</h3>
+        <ul>
+          <li>Follow-ups due today, ranked</li>
+          <li>Client meeting prep from email history</li>
+          <li>Post-meeting follow-up draft</li>
+          <li>Pipeline digest from emails</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">👔</div>
+        <h3>Manager</h3>
+        <ul>
+          <li>Daily team digest — blocked vs done</li>
+          <li>1:1 prep from direct report emails</li>
+          <li>Approval queue from inbox</li>
+          <li>Weekly summary for leadership</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">💰</div>
+        <h3>Accounting</h3>
+        <ul>
+          <li>Unpaid and overdue invoices surfaced</li>
+          <li>Payroll and tax deadline alerts</li>
+          <li>Expense report reminders detected</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">🎧</div>
+        <h3>Customer Support</h3>
+        <ul>
+          <li>Escalation detector in email threads</li>
+          <li>Customer sentiment summary</li>
+          <li>Knowledge base search before replying</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">📦</div>
+        <h3>Operations</h3>
+        <ul>
+          <li>Supplier status from emails</li>
+          <li>Stock and order alerts</li>
+          <li>Deadline tracker from calendar</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">🗂</div>
+        <h3>Admin / EA</h3>
+        <ul>
+          <li>Executive's day at a glance</li>
+          <li>Email backlog ranked and triaged</li>
+          <li>Meeting prep and scheduling support</li>
+        </ul>
+      </div>
+      <div class="role-card">
+        <div class="role-emoji">💻</div>
+        <h3>Developer</h3>
+        <ul>
+          <li>PR and bug digest from GitHub emails</li>
+          <li>Incident brief with related docs</li>
+          <li>Sprint meeting prep from calendar</li>
+        </ul>
+      </div>
     </div>
-    <ul class="privacy-list">
-      <li><strong>No telemetry.</strong> Sheru collects nothing. No analytics, no crash reports, no usage data.</li>
-      <li><strong>No accounts.</strong> No registration. No login. No subscription tracking.</li>
-      <li><strong>Mail stays local.</strong> Email content is read and processed entirely on your device.</li>
-      <li><strong>OAuth tokens in your keychain.</strong> Gmail and Google Calendar tokens are stored in your system keychain — never on AivionLabs servers.</li>
-      <li><strong>Audit log on-device.</strong> Every action is logged to <code style="background:var(--bg);padding:0.1rem 0.35rem;border-radius:4px;font-size:0.85em;">~/.sheru/logs/</code> for your review only.</li>
-      <li><strong>GDPR compliant.</strong> Because no personal data reaches us, you have full control. Delete everything by removing <code style="background:var(--bg);padding:0.1rem 0.35rem;border-radius:4px;font-size:0.85em;">~/.sheru</code>.</li>
-    </ul>
   </div>
 </section>
+
+<!-- Privacy / PII -->
+<section id="privacy" class="pii-section">
+  <div class="container">
+    <div class="pii-inner">
+      <div class="pii-copy">
+        <p class="section-label">Privacy</p>
+        <h2 class="section-title">You see exactly<br /><span>what was removed</span><br />before it goes.</h2>
+        <p style="color:var(--muted);font-size:.95rem;margin-bottom:2rem;line-height:1.7;">
+          Every AI call strips your data of personal identifiers first. You get a confirmation showing the substitutions — and you can cancel if anything looks wrong. No raw personal data ever reaches AivionLabs or Google.
+        </p>
+        <ul class="pii-list">
+          <li><span class="check">✓</span><div><strong>Names, emails, amounts</strong> replaced with <code>[PERSON_1]</code>, <code>[EMAIL_1]</code>, <code>[AMOUNT_1]</code> before leaving your machine.</div></li>
+          <li><span class="check">✓</span><div><strong>Gemini uses Google's no-retention API tier.</strong> Your data is not used for training.</div></li>
+          <li><span class="check">✓</span><div><strong>AivionLabs proxy is zero-log.</strong> It forwards requests and deducts tokens — stores nothing else.</div></li>
+          <li><span class="check">✓</span><div><strong>OAuth tokens in your system keychain.</strong> Gmail and Google Calendar credentials never touch AivionLabs servers.</div></li>
+          <li><span class="check">✓</span><div><strong>Full erasure:</strong> <code>rm -rf ~/.sheru</code> — or click "Forget everything" in the app.</div></li>
+          <li><span class="check">✓</span><div><strong>GDPR:</strong> AivionLabs receives no personal data. You are the sole controller of data on your device.</div></li>
+        </ul>
+      </div>
+
+      <!-- Dialog mockup -->
+      <div>
+        <div class="dialog-mock">
+          <div class="dialog-header">
+            <div class="dialog-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <span class="dialog-title">Sheru — before sending to AI</span>
+          </div>
+          <div class="dialog-body">
+            <p>We removed this from your data</p>
+            <div class="redact-row"><span class="redact-tag">[PERSON_1]</span><span class="redact-arrow">→</span><span class="redact-value">Sarah Chen</span></div>
+            <div class="redact-row"><span class="redact-tag">[EMAIL_1]</span><span class="redact-arrow">→</span><span class="redact-value">sarah@company.com</span></div>
+            <div class="redact-row"><span class="redact-tag">[AMOUNT_1]</span><span class="redact-arrow">→</span><span class="redact-value">€5,000</span></div>
+
+            <div class="dialog-gemini">
+              <span>What Gemini sees</span>
+              "[PERSON_1] sent invoice to [EMAIL_1] for [AMOUNT_1]. Please draft a reply."
+            </div>
+
+            <div class="dialog-cost">
+              <span>Cost: ~6,200 tokens <strong>(1.0 BDT)</strong></span>
+              <span>Balance: <strong>8,240 / 10,000</strong> today</span>
+            </div>
+            <div class="dialog-actions">
+              <div class="dialog-btn dialog-btn-cancel">Cancel</div>
+              <div class="dialog-btn dialog-btn-send">Send anonymised →</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;color:var(--dim);text-align:center;margin-top:.85rem;">The confirmation every user sees before every AI call.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Token model -->
+<section id="pricing">
+  <div class="container">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Pay for what you use.<br />Start free.</h2>
+    <p class="section-sub">No subscription. Most features are always free. AI reasoning uses prepaid token packs — you see the cost before it runs.</p>
+
+    <div class="token-grid">
+      <div>
+        <div class="token-free">
+          <h3>10,000 tokens</h3>
+          <p>free every day, for every user — resets at midnight. Covers a morning brief + a few email summaries daily, no payment needed.</p>
+        </div>
+
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Always free, no tokens needed</p>
+        <ul class="free-list">
+          <li>Morning briefing (templated)</li>
+          <li>File search and open</li>
+          <li>App launch</li>
+          <li>System monitoring and diagnostics</li>
+          <li>Calendar queries</li>
+          <li>Memory — remember, forget, recall</li>
+          <li>Heuristic email importance ranking</li>
+          <li>Local RAG retrieval (search stays on device)</li>
+        </ul>
+      </div>
+
+      <div>
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Token packs</p>
+        <div class="pack-list">
+          <div class="pack">
+            <div><div class="pack-name">Starter</div><div class="pack-tokens">500,000 tokens</div></div>
+            <div class="pack-price">100 BDT</div>
+          </div>
+          <div class="pack">
+            <div><div class="pack-name">Standard</div><div class="pack-tokens">3,000,000 tokens</div></div>
+            <div class="pack-price">500 BDT</div>
+          </div>
+          <div class="pack">
+            <div><div class="pack-name">Pro</div><div class="pack-tokens">7,000,000 tokens</div></div>
+            <div class="pack-price">1,000 BDT</div>
+          </div>
+        </div>
+
+        <div class="pack-payment">
+          <span class="pay-badge">💳 Stripe</span>
+          <span class="pay-badge">📱 bKash</span>
+          <span class="pay-badge">📱 Nagad</span>
+        </div>
+
+        <p style="font-size:.8rem;color:var(--dim);margin-top:1.25rem;line-height:1.65;">
+          Sheru estimates the token cost before every AI call and asks before spending. Low-cost operations (&lt;500 tokens) show a silent toast instead of a full confirmation.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
 
 <!-- Download -->
 <section id="download">
   <div class="container">
-    <p class="section-label">Download</p>
-    <h2 class="section-title">Get Sheru</h2>
-    <p class="section-sub">Currently in closed beta. Download the build for your platform, or request an invite.</p>
+    <p class="section-label centered">Download</p>
+    <h2 class="section-title centered">Get Sheru</h2>
+    <p class="section-sub centered">Currently in closed beta. Select your platform, or request an invite below.</p>
     <div class="platform-grid">
       <div class="platform-card">
         <div class="platform-header">
           <span class="platform-icon">🍎</span>
-          <div>
-            <div class="platform-name">macOS</div>
-            <div class="platform-arch">Apple Silicon &amp; Intel · macOS 13+</div>
-          </div>
+          <div><div class="platform-name">macOS</div><div class="platform-arch">Apple Silicon &amp; Intel · macOS 13+</div></div>
         </div>
         <span class="badge badge-beta">Beta available</span>
-        <div class="platform-action">
-          <a href="https://github.com/AivionLabs/sheru-releases/tree/main/macOs" class="btn btn-primary" target="_blank" rel="noopener">
-            ↓ Download DMG
-          </a>
+        <div class="platform-btn">
+          <a href="https://github.com/AivionLabs/sheru-releases/tree/main/macOs" class="btn btn-primary" target="_blank" rel="noopener">↓ Download DMG</a>
         </div>
       </div>
       <div class="platform-card">
         <div class="platform-header">
           <span class="platform-icon">🪟</span>
-          <div>
-            <div class="platform-name">Windows</div>
-            <div class="platform-arch">Windows 11 · x64</div>
-          </div>
+          <div><div class="platform-name">Windows</div><div class="platform-arch">Windows 11 · x64</div></div>
         </div>
-        <span class="badge badge-planned">Coming soon</span>
-        <div class="platform-action">
-          <a href="https://github.com/AivionLabs/sheru" class="btn btn-secondary" target="_blank" rel="noopener">
-            Watch repo
-          </a>
+        <span class="badge badge-soon">Coming soon</span>
+        <div class="platform-btn">
+          <a href="https://github.com/AivionLabs/sheru" class="btn btn-ghost" target="_blank" rel="noopener">Watch repo</a>
         </div>
       </div>
       <div class="platform-card">
         <div class="platform-header">
           <span class="platform-icon">🐧</span>
-          <div>
-            <div class="platform-name">Linux</div>
-            <div class="platform-arch">x64 · ARM64</div>
-          </div>
+          <div><div class="platform-name">Linux</div><div class="platform-arch">x64 · ARM64</div></div>
         </div>
-        <span class="badge badge-planned">Planned</span>
-        <div class="platform-action">
-          <a href="https://github.com/AivionLabs/sheru" class="btn btn-secondary" target="_blank" rel="noopener">
-            Watch repo
-          </a>
+        <span class="badge badge-soon">Planned</span>
+        <div class="platform-btn">
+          <a href="https://github.com/AivionLabs/sheru" class="btn btn-ghost" target="_blank" rel="noopener">Watch repo</a>
         </div>
       </div>
     </div>
@@ -489,14 +662,12 @@
 </section>
 
 <!-- CTA -->
-<section class="cta-section">
+<section style="padding-top:0;padding-bottom:5.5rem;">
   <div class="container">
     <div class="cta-box">
       <h2>Request beta access</h2>
-      <p>Sheru is currently invite-only. Drop us an email and we'll add you to the list.</p>
-      <a href="mailto:hello@aivionlabs.com?subject=Sheru Beta Access Request" class="btn btn-primary">
-        Request an invite
-      </a>
+      <p>Sheru is currently invite-only. Email us and we'll add you to the list.</p>
+      <a href="mailto:hello@aivionlabs.com?subject=Sheru Beta Access Request" class="btn btn-primary">Request an invite</a>
     </div>
   </div>
 </section>
@@ -504,9 +675,7 @@
 <!-- Footer -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">
-      🐕 Sheru &nbsp;·&nbsp; by AivionLabs
-    </div>
+    <div class="footer-brand">🐕 Sheru &nbsp;·&nbsp; by AivionLabs</div>
     <div class="footer-links">
       <a href="https://github.com/AivionLabs/sheru" target="_blank" rel="noopener">Source</a>
       <a href="https://github.com/AivionLabs/sheru/issues" target="_blank" rel="noopener">Issues</a>
