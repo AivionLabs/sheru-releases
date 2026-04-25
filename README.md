@@ -1,5 +1,22 @@
 # Sheru — Releases
 
+> **⚠ UNDER ACTIVE DEVELOPMENT — DO NOT CLONE, DOWNLOAD, OR USE ANY FILES FROM THIS REPOSITORY.**
+> This repository is a technical infrastructure endpoint used by the Sheru auto-updater. All releases, binaries, and assets published here are pre-release, unsigned, and intended solely for authorised internal testers. No software from this repository has been reviewed, audited, or approved for general use. Unauthorised use is at your own risk.
+
+---
+
+> **GDPR Notice**
+>
+> **Data Controller:** AivionLabs, contact [hello@aivionlabs.com](mailto:hello@aivionlabs.com)
+>
+> This repository does not collect, store, or process any personal data. Sheru processes all data (mail, calendar, files, system metrics) **locally on your own device**. No personal data is transmitted to AivionLabs or any third party as part of normal operation.
+>
+> If you are an authorised beta tester and believe your personal data has been processed in connection with this software, you have the right under the GDPR to: access, rectify, erase, or port your data, and to object to or restrict its processing. To exercise any of these rights, contact [hello@aivionlabs.com](mailto:hello@aivionlabs.com).
+>
+> For the full privacy policy, see [PRIVACY.md](./PRIVACY.md).
+
+---
+
 This repository hosts the official binary releases of **Sheru**, the offline desktop agent by [AivionLabs](https://aivionlabs.com).
 
 > **Product page:** [aivionlabs.github.io/sheru-releases](https://aivionlabs.github.io/sheru-releases)
