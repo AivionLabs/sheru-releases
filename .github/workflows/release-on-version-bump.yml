@@ -1,0 +1,54 @@
+name: Trigger release on version bump
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/latest.json
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    # Never fire when the build bot commits signatures back into latest.json
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if version changed
+        id: check
+        run: |
+          NEW=$(jq -r '.version' docs/latest.json)
+          NOTES=$(jq -r '.notes // ""' docs/latest.json)
+          OLD=$(git show HEAD^:docs/latest.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "0.0.0")
+
+          echo "new=$NEW"
+          echo "old=$OLD"
+          echo "new=$NEW"   >> "$GITHUB_OUTPUT"
+          echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
+
+          if [ "$NEW" != "$OLD" ] && [ "$NEW" != "0.0.0" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Version unchanged ($NEW) — skipping release trigger."
+          fi
+
+      - name: Dispatch release build to sheru repo
+        if: steps.check.outputs.changed == 'true'
+        env:
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
+        run: |
+          jq -n \
+            --arg version "${{ steps.check.outputs.new }}" \
+            --arg notes   "${{ steps.check.outputs.notes }}" \
+            '{"event_type":"start-release","client_payload":{"version":$version,"notes":$notes}}' | \
+          curl -sS -X POST \
+            -H "Authorization: token $RELEASE_PAT" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            -d @- \
+            https://api.github.com/repos/AivionLabs/sheru/dispatches
+
+          echo "Triggered release build for v${{ steps.check.outputs.new }}"
