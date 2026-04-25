@@ -4,29 +4,35 @@ on:
   push:
     branches: [main]
     paths:
-      - release.json
+      - RELEASE.md
 
 jobs:
   trigger:
     runs-on: ubuntu-latest
-    # Never fire when the build bot commits signatures back into latest.json
     if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Check if version changed
+      - name: Parse version and notes from RELEASE.md
         id: check
         run: |
-          NEW=$(jq -r '.version' release.json)
-          NOTES=$(jq -r '.notes // ""' release.json)
-          OLD=$(git show HEAD^:release.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "0.0.0")
+          NEW=$(grep -m1 '^## v' RELEASE.md | sed 's/## v//')
+          NOTES=$(awk '/^## v/{found++; if(found==1){next}} found==1{print}' RELEASE.md | sed '/^## v/,$d')
+          OLD=$(git show HEAD^:RELEASE.md 2>/dev/null | grep -m1 '^## v' | sed 's/## v//' || echo "0.0.0")
 
           echo "new=$NEW"
           echo "old=$OLD"
-          echo "new=$NEW"   >> "$GITHUB_OUTPUT"
-          echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
+          echo "new=$NEW"     >> "$GITHUB_OUTPUT"
+          echo "old=$OLD"     >> "$GITHUB_OUTPUT"
+
+          # Use heredoc to safely pass multiline notes
+          {
+            echo "notes<<EOF_NOTES"
+            echo "$NOTES"
+            echo "EOF_NOTES"
+          } >> "$GITHUB_OUTPUT"
 
           if [ "$NEW" != "$OLD" ] && [ "$NEW" != "0.0.0" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
