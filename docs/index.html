@@ -301,8 +301,78 @@
     /* ── divider ── */
     .divider { border: none; border-top: 1px solid var(--border); }
   </style>
+
+  <style>
+    #gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    #gate.hidden { display: none; }
+    .gate-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      width: 100%; max-width: 380px;
+      text-align: center;
+    }
+    .gate-logo { font-size: 2.25rem; margin-bottom: 1rem; }
+    .gate-box h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: .4rem; }
+    .gate-box p { color: var(--muted); font-size: .875rem; margin-bottom: 1.75rem; }
+    .gate-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1rem;
+      padding: .7rem 1rem;
+      outline: none;
+      letter-spacing: .1em;
+      text-align: center;
+      transition: border-color .15s;
+      margin-bottom: .85rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+    .gate-input:focus { border-color: var(--accent); }
+    .gate-input.error { border-color: #ef4444; animation: shake .3s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-6px)}
+      75%{transform:translateX(6px)}
+    }
+    .gate-submit {
+      width: 100%;
+      background: var(--accent); color: #000;
+      border: none; border-radius: 8px;
+      font-size: .95rem; font-weight: 700;
+      padding: .75rem; cursor: pointer;
+      transition: background .15s;
+    }
+    .gate-submit:hover { background: #4ade80; }
+    .gate-error { color: #f87171; font-size: .8rem; margin-top: .75rem; min-height: 1.2em; }
+    #content { display: none; }
+    #content.visible { display: block; }
+  </style>
 </head>
 <body>
+
+<!-- Password gate -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">🐕</div>
+    <h2>Sheru — Private Beta</h2>
+    <p>Enter your access password to continue.</p>
+    <input id="gate-input" class="gate-input" type="password" placeholder="············" autocomplete="current-password" />
+    <button class="gate-submit" id="gate-btn">Enter</button>
+    <p class="gate-error" id="gate-error"></p>
+  </div>
+</div>
+
+<!-- Main content -->
+<div id="content">
 
 <!-- Nav -->
 <nav>
@@ -686,6 +756,45 @@
     <p class="footer-copy">© 2026 AivionLabs. MIT licensed. Named after a loyal Bangla watchdog.</p>
   </div>
 </footer>
+
+</div><!-- /content -->
+
+<script>
+  const HASH = '9afb1a6fb632737f162a795472ad45e8b2dfd8f7739ab266e6da8691e535d551';
+  const KEY  = 'sheru_auth';
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function unlock() {
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('content').classList.add('visible');
+  }
+
+  async function attempt() {
+    const val = document.getElementById('gate-input').value.trim();
+    const hash = await sha256(val);
+    if (hash === HASH) {
+      sessionStorage.setItem(KEY, '1');
+      unlock();
+    } else {
+      const input = document.getElementById('gate-input');
+      const err   = document.getElementById('gate-error');
+      input.classList.add('error');
+      err.textContent = 'Incorrect password.';
+      setTimeout(() => { input.classList.remove('error'); input.value = ''; input.focus(); }, 350);
+    }
+  }
+
+  if (sessionStorage.getItem(KEY)) {
+    unlock();
+  }
+
+  document.getElementById('gate-btn').addEventListener('click', attempt);
+  document.getElementById('gate-input').addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+</script>
 
 </body>
 </html>
