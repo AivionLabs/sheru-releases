@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - docs/latest.json
+      - release.json
 
 jobs:
   trigger:
@@ -19,9 +19,9 @@ jobs:
       - name: Check if version changed
         id: check
         run: |
-          NEW=$(jq -r '.version' docs/latest.json)
-          NOTES=$(jq -r '.notes // ""' docs/latest.json)
-          OLD=$(git show HEAD^:docs/latest.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "0.0.0")
+          NEW=$(jq -r '.version' release.json)
+          NOTES=$(jq -r '.notes // ""' release.json)
+          OLD=$(git show HEAD^:release.json 2>/dev/null | jq -r '.version' 2>/dev/null || echo "0.0.0")
 
           echo "new=$NEW"
           echo "old=$OLD"
