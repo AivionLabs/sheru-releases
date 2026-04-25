@@ -152,11 +152,18 @@
 
     /* ── Feature grid ── */
     .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .feature-card { background: var(--bg); padding: 2rem; }
+    .feature-card { background: var(--bg); padding: 2rem; position: relative; }
     .feature-card:hover { background: var(--surface); }
     .feature-icon { font-size: 1.6rem; margin-bottom: .85rem; }
     .feature-card h3 { font-size: .975rem; font-weight: 700; margin-bottom: .4rem; }
     .feature-card p { color: var(--muted); font-size: .875rem; line-height: 1.65; }
+    .feature-card .badge { position: absolute; top: 1.1rem; right: 1.1rem; }
+    .features-group-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin: 2.5rem 0 1rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .features-group-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
     /* ── Roles ── */
     .roles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .75rem; }
@@ -428,7 +435,7 @@
         <p class="step-num">Step 3</p>
         <div class="step-icon">✨</div>
         <h3>AI reasons</h3>
-        <p>Only the anonymised text reaches Gemini via the AivionLabs proxy (zero-log, no-retention). The result comes back and Sheru restores your real names locally.</p>
+        <p>Only the anonymised text reaches Gemini using your own API key — no middleman. The result comes back and Sheru restores your real names locally. Token economy proxy coming in Phase 2.</p>
       </div>
     </div>
   </div>
@@ -438,53 +445,98 @@
 <section id="features">
   <div class="container">
     <p class="section-label">Capabilities</p>
-    <h2 class="section-title">Everything in one place</h2>
+    <h2 class="section-title">What Sheru can do</h2>
     <p class="section-sub">From finding a file to drafting a reply to checking your calendar — all from a single chat window, all on your machine.</p>
+
+    <div class="features-group-label">Available in beta · macOS</div>
     <div class="feature-grid">
       <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Gemini AI chat</h3>
+        <p>Streaming conversation with Gemini using your own API key. 10-message rolling session context. Paste your key once via <code>/llm</code> — Sheru handles the rest.</p>
+        <span class="badge badge-beta">Available</span>
+      </div>
+      <div class="feature-card">
         <div class="feature-icon">📬</div>
-        <h3>Mail — read, rank, draft</h3>
-        <p>Reads Outlook, Apple Mail, Gmail, and any IMAP account locally. Ranks by importance for your role. Drafts replies with AI after stripping identifiers.</p>
+        <h3>Gmail via IMAP</h3>
+        <p>Connects to Gmail with an App Password (2FA required). Reads, ranks, and summarises your inbox locally. Draft replies with AI after stripping personal identifiers.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">📅</div>
-        <h3>Calendar awareness</h3>
-        <p>Knows your schedule from Outlook, macOS Calendar, or Google Calendar. Gets a 5-minute meeting prep brief before every call — attendee emails, related files, last notes.</p>
+        <h3>macOS Calendar</h3>
+        <p>Reads events via Swift EventKit — native, no credentials. Morning brief includes today's meetings automatically. Calendar permission is requested once on first use.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔍</div>
-        <h3>File search &amp; open</h3>
-        <p>"Find my offer letter" returns the path in under a second. Drag any document onto Sheru and get an instant AI summary — PDF, Word, spreadsheet.</p>
+        <h3>File search &amp; analysis</h3>
+        <p>"Find my offer letter" returns the path in under a second using Spotlight. Drag any PDF, Word, or spreadsheet onto Sheru and get an instant AI summary.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🌅</div>
         <h3>Morning briefing</h3>
-        <p>First thing every morning: today's interviews, pending approvals, urgent emails, and calendar — all in one card. Role-tailored. No AI tokens required for the daily summary.</p>
+        <p>Fires once between 07:00–12:00 with today's calendar events, urgent mail, and a role-tailored narrative — no AI tokens required for the daily summary.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🖥️</div>
         <h3>System monitoring</h3>
-        <p>CPU, RAM, disk, network, sensors, and processes — always available. "Why is my PC slow?" gets a real answer with the actual process name, not a generic shrug.</p>
+        <p>"Why is my Mac slow?" gets a real answer. <code>/mypc</code> shows CPU, RAM, battery, disk, WiFi signal, and the top processes by name — clickable tiles for drill-down.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🧠</div>
         <h3>Memory</h3>
-        <p>Say "Sheru, remember my manager is Sarah" and it sticks. Inspect and delete everything from the "What I remember" panel. No database jargon — plain English cards.</p>
+        <p>Say "Sheru, remember my manager is Sarah" and it sticks across sessions. <code>what do you know</code> lists everything; <code>forget X</code> removes it. SQLite-backed, fully local.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📡</div>
-        <h3>Network awareness</h3>
-        <p>Discovers your router, LAN devices, and active connections via local ARP scanning. Everything stays on your network — nothing is forwarded.</p>
+        <div class="feature-icon">⌨️</div>
+        <h3>Slash commands</h3>
+        <p><code>/find</code> <code>/analyse</code> <code>/track</code> <code>/mypc</code> <code>/llm</code> <code>/clear</code> — keyboard-navigable palette. Drop a file on any command. Streaming results in chat.</p>
+        <span class="badge badge-beta">Available</span>
       </div>
+    </div>
+
+    <div class="features-group-label" style="margin-top:3rem;">Coming in Phase 2 &amp; 3</div>
+    <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-icon">🔌</div>
         <h3>MCP support</h3>
-        <p>Connect to external MCP servers (Slack, Notion, Jira). Or let Sheru expose itself as an MCP server — Claude Desktop and Cursor can reach your files and calendar through it.</p>
+        <p>Connect to external MCP servers (Slack, Notion, Jira). Or expose Sheru itself as an MCP server so Claude Desktop and Cursor can reach your files and calendar.</p>
+        <span class="badge badge-soon">Phase 3</span>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🎙️</div>
         <h3>Voice input</h3>
-        <p>Optional faster-whisper integration for hands-free use. Runs locally on Apple Silicon or CUDA — no cloud transcription.</p>
+        <p>faster-whisper integration for hands-free dictation. Runs locally on Apple Silicon or CUDA — no cloud transcription.</p>
+        <span class="badge badge-soon">Phase 3</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🪟</div>
+        <h3>Windows support</h3>
+        <p>Tauri shell + Windows-native Outlook MAPI, Windows Calendar, and OneDrive integration. x64 installer with auto-update.</p>
+        <span class="badge badge-soon">Phase 2</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Gmail OAuth</h3>
+        <p>Full OAuth flow replacing the App Password requirement. Token stored in system keychain — no plaintext credentials.</p>
+        <span class="badge badge-soon">Phase 2</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📡</div>
+        <h3>Network awareness</h3>
+        <p>Discover your router, LAN devices, and active connections via local ARP scanning. "What's on my network?" answered locally.</p>
+        <span class="badge badge-soon">Phase 2</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>RAG / vector search</h3>
+        <p>sqlite-vec powered local document index. Ask questions across all your files without sending anything to AI first.</p>
+        <span class="badge badge-soon">Phase 2</span>
       </div>
     </div>
   </div>
@@ -497,8 +549,11 @@
     <h2 class="section-title">One answer at onboarding.<br />A different Sheru for everyone.</h2>
     <p class="section-sub">Sheru asks your job role once and unlocks a tailored set of defaults, briefing templates, and suggested actions. No configuration required.</p>
     <div class="roles-grid">
-      <div class="role-card">
-        <div class="role-emoji">👥</div>
+      <div class="role-card" style="border-color:var(--accent-mid);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">👥</div>
+          <span class="badge badge-beta" style="font-size:.68rem;">In Beta</span>
+        </div>
         <h3>HR &amp; People Ops</h3>
         <ul>
           <li>Interview brief before every meeting</li>
@@ -507,8 +562,11 @@
           <li>Offer letter draft from template</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">📞</div>
+      <div class="role-card" style="border-color:var(--accent-mid);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">📞</div>
+          <span class="badge badge-beta" style="font-size:.68rem;">In Beta</span>
+        </div>
         <h3>Sales</h3>
         <ul>
           <li>Follow-ups due today, ranked</li>
@@ -517,8 +575,23 @@
           <li>Pipeline digest from emails</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">👔</div>
+      <div class="role-card" style="border-color:var(--accent-mid);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">💻</div>
+          <span class="badge badge-beta" style="font-size:.68rem;">In Beta</span>
+        </div>
+        <h3>Developer</h3>
+        <ul>
+          <li>PR and bug digest from GitHub emails</li>
+          <li>Incident brief with related docs</li>
+          <li>Sprint meeting prep from calendar</li>
+        </ul>
+      </div>
+      <div class="role-card" style="opacity:.7;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">👔</div>
+          <span class="badge badge-soon" style="font-size:.68rem;">Coming soon</span>
+        </div>
         <h3>Manager</h3>
         <ul>
           <li>Daily team digest — blocked vs done</li>
@@ -527,8 +600,11 @@
           <li>Weekly summary for leadership</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">💰</div>
+      <div class="role-card" style="opacity:.7;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">💰</div>
+          <span class="badge badge-soon" style="font-size:.68rem;">Coming soon</span>
+        </div>
         <h3>Accounting</h3>
         <ul>
           <li>Unpaid and overdue invoices surfaced</li>
@@ -536,8 +612,11 @@
           <li>Expense report reminders detected</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">🎧</div>
+      <div class="role-card" style="opacity:.7;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">🎧</div>
+          <span class="badge badge-soon" style="font-size:.68rem;">Coming soon</span>
+        </div>
         <h3>Customer Support</h3>
         <ul>
           <li>Escalation detector in email threads</li>
@@ -545,8 +624,11 @@
           <li>Knowledge base search before replying</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">📦</div>
+      <div class="role-card" style="opacity:.7;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">📦</div>
+          <span class="badge badge-soon" style="font-size:.68rem;">Coming soon</span>
+        </div>
         <h3>Operations</h3>
         <ul>
           <li>Supplier status from emails</li>
@@ -554,22 +636,16 @@
           <li>Deadline tracker from calendar</li>
         </ul>
       </div>
-      <div class="role-card">
-        <div class="role-emoji">🗂</div>
+      <div class="role-card" style="opacity:.7;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <div class="role-emoji" style="margin-bottom:0;">🗂</div>
+          <span class="badge badge-soon" style="font-size:.68rem;">Coming soon</span>
+        </div>
         <h3>Admin / EA</h3>
         <ul>
           <li>Executive's day at a glance</li>
           <li>Email backlog ranked and triaged</li>
           <li>Meeting prep and scheduling support</li>
-        </ul>
-      </div>
-      <div class="role-card">
-        <div class="role-emoji">💻</div>
-        <h3>Developer</h3>
-        <ul>
-          <li>PR and bug digest from GitHub emails</li>
-          <li>Incident brief with related docs</li>
-          <li>Sprint meeting prep from calendar</li>
         </ul>
       </div>
     </div>
@@ -582,21 +658,21 @@
     <div class="pii-inner">
       <div class="pii-copy">
         <p class="section-label">Privacy</p>
-        <h2 class="section-title">You see exactly<br /><span>what was removed</span><br />before it goes.</h2>
+        <h2 class="section-title">Your data stays<br /><span>on your machine.</span></h2>
         <p style="color:var(--muted);font-size:.95rem;margin-bottom:2rem;line-height:1.7;">
-          Every AI call strips your data of personal identifiers first. You get a confirmation showing the substitutions — and you can cancel if anything looks wrong. No raw personal data ever reaches AivionLabs or Google.
+          Sheru reads your mail, calendar, and files locally. In Phase 1 beta, basic regex scrubbing removes names and emails before any AI call. The full confirmation dialog — showing exactly what was stripped — ships in Phase 2.
         </p>
         <ul class="pii-list">
-          <li><span class="check">✓</span><div><strong>Names, emails, amounts</strong> replaced with <code>[PERSON_1]</code>, <code>[EMAIL_1]</code>, <code>[AMOUNT_1]</code> before leaving your machine.</div></li>
-          <li><span class="check">✓</span><div><strong>Gemini uses Google's no-retention API tier.</strong> Your data is not used for training.</div></li>
-          <li><span class="check">✓</span><div><strong>AivionLabs proxy is zero-log.</strong> It forwards requests and deducts tokens — stores nothing else.</div></li>
-          <li><span class="check">✓</span><div><strong>OAuth tokens in your system keychain.</strong> Gmail and Google Calendar credentials never touch AivionLabs servers.</div></li>
-          <li><span class="check">✓</span><div><strong>Full erasure:</strong> <code>rm -rf ~/.sheru</code> — or click "Forget everything" in the app.</div></li>
-          <li><span class="check">✓</span><div><strong>GDPR:</strong> AivionLabs receives no personal data. You are the sole controller of data on your device.</div></li>
+          <li><span class="check">✓</span><div><strong>Reads happen entirely on your device.</strong> Mail, calendar, and file contents never leave without your explicit action.</div></li>
+          <li><span class="check">✓</span><div><strong>Regex PII scrubber in beta</strong> replaces names, emails, and amounts with <code>[PERSON_1]</code> / <code>[EMAIL_1]</code> before reaching Gemini.</div></li>
+          <li><span class="check">✓</span><div><strong>Your own Gemini API key.</strong> No AivionLabs servers involved in beta — requests go directly to Google with your key.</div></li>
+          <li><span class="check">✓</span><div><strong>Gmail App Password only.</strong> Stored in <code>~/.sheru/config.toml</code> on your machine. OAuth + keychain storage in Phase 2.</div></li>
+          <li><span class="check">✓</span><div><strong>Full erasure:</strong> <code>rm -rf ~/.sheru</code> — or click "Forget everything" in the app — removes all stored data.</div></li>
+          <li><span class="check" style="color:var(--muted);">◎</span><div style="color:var(--dim);"><strong>Full PII confirmation dialog</strong> (showing each substitution before every AI call) is a Phase 2 feature. Beta note is shown in chat until then.</div></li>
         </ul>
       </div>
 
-      <!-- Dialog mockup -->
+      <!-- Dialog mockup — preview of the Phase 2 confirmation dialog -->
       <div>
         <div class="dialog-mock">
           <div class="dialog-header">
@@ -614,17 +690,13 @@
               "[PERSON_1] sent invoice to [EMAIL_1] for [AMOUNT_1]. Please draft a reply."
             </div>
 
-            <div class="dialog-cost">
-              <span>Cost: ~6,200 tokens <strong>(1.0 BDT)</strong></span>
-              <span>Balance: <strong>8,240 / 10,000</strong> today</span>
-            </div>
-            <div class="dialog-actions">
+            <div class="dialog-actions" style="margin-top:1.25rem;">
               <div class="dialog-btn dialog-btn-cancel">Cancel</div>
               <div class="dialog-btn dialog-btn-send">Send anonymised →</div>
             </div>
           </div>
         </div>
-        <p style="font-size:.78rem;color:var(--dim);text-align:center;margin-top:.85rem;">The confirmation every user sees before every AI call.</p>
+        <p style="font-size:.78rem;color:var(--dim);text-align:center;margin-top:.85rem;">Preview: the confirmation dialog coming in Phase 2 before every AI call.</p>
       </div>
     </div>
   </div>
@@ -634,54 +706,70 @@
 <section id="pricing">
   <div class="container">
     <p class="section-label">Pricing</p>
-    <h2 class="section-title">Pay for what you use.<br />Start free.</h2>
-    <p class="section-sub">No subscription. Most features are always free. AI reasoning uses prepaid token packs — you see the cost before it runs.</p>
+    <h2 class="section-title">Free in beta.<br />BYOK — bring your own key.</h2>
+    <p class="section-sub">Phase 1 beta is completely free. You bring your own Gemini API key — Sheru uses it directly. No AivionLabs account, no billing, no subscription.</p>
 
     <div class="token-grid">
       <div>
         <div class="token-free">
-          <h3>10,000 tokens</h3>
-          <p>free every day, for every user — resets at midnight. Covers a morning brief + a few email summaries daily, no payment needed.</p>
+          <h3>Free during beta</h3>
+          <p>Sheru itself is free. All you need is a Google account and a free Gemini API key from Google AI Studio.</p>
         </div>
 
-        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Always free, no tokens needed</p>
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Always free — no AI key needed</p>
         <ul class="free-list">
-          <li>Morning briefing (templated)</li>
+          <li>Morning briefing (templated, no AI)</li>
           <li>File search and open</li>
-          <li>App launch</li>
-          <li>System monitoring and diagnostics</li>
+          <li>System monitoring and diagnostics (<code>/mypc</code>)</li>
           <li>Calendar queries</li>
           <li>Memory — remember, forget, recall</li>
           <li>Heuristic email importance ranking</li>
-          <li>Local RAG retrieval (search stays on device)</li>
+        </ul>
+
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem;margin-top:1.5rem;">Needs your Gemini key (free tier works)</p>
+        <ul class="free-list">
+          <li>AI chat and email drafting</li>
+          <li>Document analysis (<code>/analyse</code>)</li>
+          <li>Role-tailored AI answers</li>
+          <li>AI-powered morning brief narrative</li>
         </ul>
       </div>
 
       <div>
-        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">Token packs</p>
+        <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;">How to get a free Gemini key</p>
         <div class="pack-list">
           <div class="pack">
-            <div><div class="pack-name">Starter</div><div class="pack-tokens">500,000 tokens</div></div>
-            <div class="pack-price">100 BDT</div>
+            <div>
+              <div class="pack-name">Step 1 — Google AI Studio</div>
+              <div class="pack-tokens">Visit aistudio.google.com → Get API key</div>
+            </div>
+            <div class="pack-price" style="font-size:.9rem;">Free</div>
           </div>
           <div class="pack">
-            <div><div class="pack-name">Standard</div><div class="pack-tokens">3,000,000 tokens</div></div>
-            <div class="pack-price">500 BDT</div>
+            <div>
+              <div class="pack-name">Step 2 — Paste in Sheru</div>
+              <div class="pack-tokens">Type <code>/llm</code> in chat → paste key → done</div>
+            </div>
+            <div class="pack-price" style="font-size:.9rem;">30s</div>
           </div>
           <div class="pack">
-            <div><div class="pack-name">Pro</div><div class="pack-tokens">7,000,000 tokens</div></div>
-            <div class="pack-price">1,000 BDT</div>
+            <div>
+              <div class="pack-name">Free tier limits</div>
+              <div class="pack-tokens">Gemini Flash: 15 requests/min, 1,500/day — plenty for daily use</div>
+            </div>
+            <div class="pack-price" style="font-size:.9rem;">✓</div>
           </div>
         </div>
 
-        <div class="pack-payment">
-          <span class="pay-badge">💳 Stripe</span>
-          <span class="pay-badge">📱 bKash</span>
-          <span class="pay-badge">📱 Nagad</span>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-top:1.5rem;">
+          <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem;">Coming in Phase 2</p>
+          <p style="font-size:.85rem;color:var(--dim);line-height:1.65;">
+            AivionLabs token proxy with prepaid packs (Stripe, bKash, Nagad). Daily free allowance, zero-log forwarding, no-retention Gemini tier. Until then, your own key is the simplest path.
+          </p>
         </div>
 
-        <p style="font-size:.8rem;color:var(--dim);margin-top:1.25rem;line-height:1.65;">
-          Sheru estimates the token cost before every AI call and asks before spending. Low-cost operations (&lt;500 tokens) show a silent toast instead of a full confirmation.
+        <p style="font-size:.8rem;color:var(--dim);margin-top:1rem;line-height:1.65;">
+          Your API key is stored only in <code>~/.sheru/config.toml</code> on your machine. It is never sent to AivionLabs.
         </p>
       </div>
     </div>
@@ -704,7 +792,7 @@
         </div>
         <span class="badge badge-beta">Beta available</span>
         <div class="platform-btn">
-          <a href="https://github.com/AivionLabs/sheru-releases/tree/main/macOs" class="btn btn-primary" target="_blank" rel="noopener">↓ Download DMG</a>
+          <a href="https://github.com/AivionLabs/sheru-releases/releases/latest/download/Sheru.dmg" class="btn btn-primary" target="_blank" rel="noopener">↓ Download DMG</a>
         </div>
       </div>
       <div class="platform-card">
